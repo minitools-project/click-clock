@@ -10,6 +10,8 @@ let counterValue = 0;
 let lastIntervalTime = 0;
 let intervalEnabled = false;
 let lastSecondPlayed = -1; // Track last second for 25-second interval
+let timerSeconds = 0;
+let timerRunning = false;
 
 // DOM Elements
 const timerDisplay = document.getElementById('timerDisplay');
@@ -19,6 +21,11 @@ const pauseBtn = document.getElementById('pauseBtn');
 const resetBtn = document.getElementById('resetBtn');
 const intervalToggle = document.getElementById('intervalToggle');
 const beepSound = document.getElementById('beepSound');
+const minutesInput = document.getElementById('minutesInput');
+const secondsInput = document.getElementById('secondsInput');
+const timerModal = document.getElementById('timerModal');
+const timePicker = document.getElementById('timePicker');
+const hoursInput = document.getElementById('hoursInput');
 
 // ============================================
 // Timer Functions
@@ -28,79 +35,65 @@ const beepSound = document.getElementById('beepSound');
  * Start the countdown timer
  */
 function startTimer() {
-    if (isRunning) return; // Prevent multiple intervals
-    
-    isRunning = true;
-    lastSecondPlayed = -1;
-    
-    // Update UI
-    startBtn.disabled = true;
-    pauseBtn.disabled = false;
-    
-    // Record the exact start time for accurate countdown
-    const startTime = Date.now();
-    const adjustedStart = startTime - ((20 * 60 - timeRemaining) * 1000);
-    
-    // Clear any existing interval
-    if (timerInterval) clearInterval(timerInterval);
-    
-    // Run timer every 100ms for smooth updates and accurate calculation
-    timerInterval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - adjustedStart) / 1000);
-        timeRemaining = Math.max(0, 20 * 60 - elapsed);
+    if (!timerRunning) {
+        const hours = parseInt(document.getElementById('hoursInput').value) || 0;
+        const minutes = parseInt(document.getElementById('minutesInput').value) || 0;
+        const seconds = parseInt(document.getElementById('secondsInput').value) || 0;
         
-        updateTimerDisplay();
+        timerSeconds = hours * 3600 + minutes * 60 + seconds;
         
-        // Check for 25-second interval signal
-        if (intervalEnabled && timeRemaining > 0) {
-            checkIntervalSignal();
+        if (timerSeconds > 0) {
+            timerRunning = true;
+            document.getElementById('timerInputsContainer').classList.add('hidden');
+            document.getElementById('timerDisplay').classList.remove('hidden');
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                }
+            }, 1000);
         }
-        
-        // Timer finished
-        if (timeRemaining <= 0) {
-            finishTimer();
-        }
-    }, 100);
+    }
 }
 
 /**
  * Pause the countdown timer
  */
 function pauseTimer() {
-    if (!isRunning) return;
-    
-    isRunning = false;
-    
-    if (timerInterval) {
+    if (timerRunning) {
+        timerRunning = false;
         clearInterval(timerInterval);
-        timerInterval = null;
     }
-    
-    // Update UI
-    startBtn.disabled = false;
-    pauseBtn.disabled = true;
 }
 
 /**
  * Reset the countdown timer
  */
 function resetTimer() {
-    pauseTimer();
-    timeRemaining = 20 * 60;
-    lastSecondPlayed = -1;
-    updateTimerDisplay();
-    startBtn.disabled = false;
-    pauseBtn.disabled = true;
+    timerRunning = false;
+    clearInterval(timerInterval);
+    timerSeconds = 0;
+    document.getElementById('timerDisplay').classList.add('hidden');
+    document.getElementById('timerInputsContainer').classList.remove('hidden');
+    document.getElementById('hoursInput').value = '';
+    document.getElementById('minutesInput').value = '';
+    document.getElementById('secondsInput').value = '';
 }
 
 /**
  * Update the timer display
  */
 function updateTimerDisplay() {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    
+    const hours = Math.floor(timerSeconds / 3600);
+    const minutes = Math.floor((timerSeconds % 3600) / 60);
+    const seconds = timerSeconds % 60;
     timerDisplay.textContent = 
+        String(hours).padStart(2, '0') + ':' + 
         String(minutes).padStart(2, '0') + ':' + 
         String(seconds).padStart(2, '0');
 }
@@ -261,4 +254,75 @@ window.addEventListener('beforeunload', () => {
     if (timerInterval) {
         clearInterval(timerInterval);
     }
+});
+
+// ============================================
+// Timer Modal Functions
+// ============================================
+
+function openTimerModal() {
+    const minutes = Math.floor(timerSeconds / 60);
+    const seconds = timerSeconds % 60;
+    document.getElementById('minutesInput').value = minutes;
+    document.getElementById('secondsInput').value = String(seconds).padStart(2, '0');
+    document.getElementById('timerModal').classList.add('active');
+}
+
+function closeTimerModal() {
+    document.getElementById('timerModal').classList.remove('active');
+}
+
+function saveTimerTime() {
+    const minutes = parseInt(document.getElementById('minutesInput').value) || 0;
+    const seconds = parseInt(document.getElementById('secondsInput').value) || 0;
+    timerSeconds = minutes * 60 + seconds;
+    updateTimerDisplay();
+    closeTimerModal();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timerSeconds / 60);
+    const seconds = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = 
+        String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+}
+
+// ============================================
+// Timer Picker
+// ============================================
+
+function openTimerPicker() {
+    const isMobile = /iPhone|iPad|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        const timeString = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        const picker = document.getElementById('timePicker');
+        picker.value = timeString;
+        picker.focus();
+        picker.click();
+    } else {
+        openTimerModal();
+    }
+}
+
+document.getElementById('timePicker').addEventListener('change', function() {
+    if (this.value) {
+        const [minutes, seconds] = this.value.split(':').map(Number);
+        timerSeconds = minutes * 60 + seconds;
+        updateTimerDisplay();
+    }
+});
+
+// Limit input to 2 digits
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['hoursInput', 'minutesInput', 'secondsInput'];
+    inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+            if (this.value.length > 2) {
+                this.value = this.value.slice(0, 2);
+            }
+        });
+    });
 });

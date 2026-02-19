@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickClock - Timer & Counter</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <div class="container">
@@ -17,19 +18,21 @@
             <div class="main-container">
             <!-- Timer Section -->
             <section class="section timer-section">
-                <div class="timer-display" id="timerDisplay">20:00</div>
+                <div class="timer-display hidden" id="timerDisplay">00:00:00</div>
+                
+                <div class="timer-inputs-container" id="timerInputsContainer">
+                    <input type="number" id="hoursInput" class="timer-input" min="0" max="23" placeholder="00" maxlength="2">
+                    <span class="timer-separator">:</span>
+                    <input type="number" id="minutesInput" class="timer-input" min="0" max="59" placeholder="00" maxlength="2">
+                    <span class="timer-separator">:</span>
+                    <input type="number" id="secondsInput" class="timer-input" min="0" max="59" placeholder="00" maxlength="2">
+                </div>
                 
                 <div class="button-group">
                     <button class="btn btn-primary" id="startBtn" onclick="startTimer()">Start</button>
-                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseTimer()" >Pause</button>
+                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseTimer()">Pause</button>
                     <button class="btn btn-tertiary" id="resetBtn" onclick="resetTimer()">Reset</button>
                 </div>
-
-                <!-- Optional Interval Signal -->
-                <!-- <div class="checkbox-group">
-                    <input type="checkbox" id="intervalToggle" onchange="toggleInterval()">
-                    <label for="intervalToggle">25-second interval signal</label>
-                </div> -->
             </section>
 
             <!-- Counter Section -->
@@ -47,7 +50,29 @@
             </section>
             </div>
         </main>
-    </div>
+
+        <input type="time" id="timePicker" style="display: none;">
+
+        <!-- Timer Input Modal -->
+        <div class="modal" id="timerModal">
+            <div class="modal-content">
+                <h2>Set Time</h2>
+                <div class="time-inputs">
+                    <div class="time-input-group">
+                        <label for="minutesInput">Minutes</label>
+                        <input type="number" id="minutesInput" min="0" max="59" value="20">
+                    </div>
+                    <div class="time-input-group">
+                        <label for="secondsInput">Seconds</label>
+                        <input type="number" id="secondsInput" min="0" max="59" value="00">
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeTimerModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveTimerTime()">Set</button>
+                </div>
+            </div>
+        </div>
 
     <!-- Audio elements for sounds -->
     <audio id="beepSound" preload="auto">
