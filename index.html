@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickClock - Timer & Counter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ClickClock</h1>
+            <p class="subtitle">Timer & Counter</p>
+        </header>
+
+        <main>
+            <!-- Timer Section -->
+            <section class="section timer-section">
+                <h2>Countdown Timer</h2>
+                <div class="timer-display" id="timerDisplay">20:00</div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="startBtn" onclick="startTimer()">Start</button>
+                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseTimer()" disabled>Pause</button>
+                    <button class="btn btn-tertiary" id="resetBtn" onclick="resetTimer()">Reset</button>
+                </div>
+
+                <!-- Optional Interval Signal -->
+                <div class="checkbox-group">
+                    <input type="checkbox" id="intervalToggle" onchange="toggleInterval()">
+                    <label for="intervalToggle">25-second interval signal</label>
+                </div>
+            </section>
+
+            <!-- Counter Section -->
+            <section class="section counter-section">
+                <h2>Tap Counter</h2>
+                <div class="counter-display" id="counterDisplay">0</div>
+                
+                <div class="button-group">
+                    <button class="btn btn-increment" onclick="incrementCounter()">+</button>
+                    <button class="btn btn-decrement" onclick="decrementCounter()">–</button>
+                    <button class="btn btn-tertiary" id="counterResetBtn" onclick="resetCounter()">Reset</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built with HTML, CSS & Vanilla JavaScript</p>
+        </footer>
+    </div>
+
+    <!-- Audio elements for sounds -->
+    <audio id="beepSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" type="audio/wav">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

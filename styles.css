@@ -1,0 +1,263 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 32px 24px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* Main content */
+main {
+    flex: 1;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Sections */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section h2 {
+    font-size: 1.3rem;
+    color: #333;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Timer Display */
+.timer-display,
+.counter-display {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #667eea;
+    font-family: 'Monaco', 'Courier New', monospace;
+    letter-spacing: 2px;
+    padding: 24px;
+    background: #f8f9ff;
+    border-radius: 16px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.counter-display {
+    color: #764ba2;
+}
+
+/* Button styles */
+.button-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.btn {
+    padding: 16px 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    active: all 0.1s ease;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button variants */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-tertiary {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.btn-tertiary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-increment {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    font-size: 1.5rem;
+}
+
+.btn-increment:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(67, 233, 123, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-decrement {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    font-size: 1.5rem;
+}
+
+.btn-decrement:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(250, 112, 154, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Checkbox group */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    justify-content: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.checkbox-group label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #555;
+    user-select: none;
+}
+
+/* Footer */
+footer {
+    background: #f8f9ff;
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .timer-display,
+    .counter-display {
+        font-size: 2.8rem;
+        min-height: 100px;
+    }
+
+    main {
+        padding: 24px 16px;
+        gap: 24px;
+    }
+
+    .btn {
+        padding: 14px 10px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        border-radius: 16px;
+    }
+
+    header {
+        padding: 24px 16px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .timer-display,
+    .counter-display {
+        font-size: 2.2rem;
+        min-height: 90px;
+    }
+
+    main {
+        padding: 16px 12px;
+        gap: 20px;
+    }
+
+    .button-group {
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 12px 8px;
+        font-size: 0.85rem;
+    }
+}
