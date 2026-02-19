@@ -9,24 +9,22 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow-y:hidden;
 }
 
 .container {
     width:100%;
     height:100%;
+    min-height:100vh;
     max-width:1024px;
-    min-height:90vh;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr;
 }
 
 /* Header */
-.timer-header {
+header {
     color: white;
     padding: 8px;
     text-align: center;
@@ -35,7 +33,6 @@ body {
 header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 8px;
     letter-spacing: 1px;
 }
 
@@ -46,28 +43,28 @@ header h1 {
 
 /* Main content */
 main {
+    padding:10px;
+    height:100%;
+    width:100%;
     flex: 1;
+}
+.main-container{
+    height:100%;
+    width:100%;
+    border-radius:8px;
+    background-color:rgba(0, 0, 0, 0.3);
     display: grid;
     grid-template-rows: 1fr 1fr;
-    
-}
-
-/* Sections */.timer-section {
+    }
+.section {
     display:grid;
-    grid-template-rows:51px 1fr 51px;
-    
-}
-.counter-section {
-    display:grid;
-    grid-template-rows: 1fr 51px;
-    
+    grid-template-rows:1fr 71px;
 }
 .section h2 {
     font-size: 1.3rem;
     color: white;
     text-align: center;
     font-weight: 600;
-    margin-bottom: 8px;
 }
 
 /* Timer Display */
@@ -103,7 +100,6 @@ main {
 /* Counter Section Layout */
 .counter-section {
     align-items: center;
-    box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
     
 }
 .counter-container{
@@ -114,6 +110,7 @@ main {
 }
 button{    
     background:none;
+    height:100%;
 }
 /* Large Tap Button */
 .btn-tap {
@@ -140,6 +137,7 @@ button{
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
+    height:100%;
 }
 
 /* Button styles */
@@ -206,8 +204,17 @@ button{
 
 /* Footer */
 
-/* Responsive design */
-@media (max-width: 600px) {
+@media (min-width: 1000px) {
+body{
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+}
+
+@media (max-width: 800px) {
+ 
 
     .timer-display {
         font-size: 2.8rem;
@@ -215,8 +222,6 @@ button{
     }
 
     .btn-tap {
-        width: 240px;
-        height: 240px;
         font-size: 2rem;
     }
 
@@ -239,8 +244,6 @@ button{
     }
 
     .btn-tap {
-        width: 200px;
-        height: 200px;
         font-size: 1.8rem;
     }
 
