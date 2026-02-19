@@ -12,6 +12,9 @@ let intervalEnabled = false;
 let lastSecondPlayed = -1; // Track last second for 25-second interval
 let timerSeconds = 0;
 let timerRunning = false;
+let savedHours = 0;
+let savedMinutes = 0;
+let savedSeconds = 0;
 
 // DOM Elements
 const timerDisplay = document.getElementById('timerDisplay');
@@ -40,12 +43,18 @@ function startTimer() {
         const minutes = parseInt(document.getElementById('minutesInput').value) || 0;
         const seconds = parseInt(document.getElementById('secondsInput').value) || 0;
         
+        // Save the input values
+        savedHours = hours;
+        savedMinutes = minutes;
+        savedSeconds = seconds;
+        
         timerSeconds = hours * 3600 + minutes * 60 + seconds;
         
         if (timerSeconds > 0) {
             timerRunning = true;
             document.getElementById('timerInputsContainer').classList.add('hidden');
             document.getElementById('timerDisplay').classList.remove('hidden');
+            document.getElementById('pauseBtn').disabled = false;
             updateTimerDisplay();
             
             timerInterval = setInterval(() => {
@@ -55,6 +64,7 @@ function startTimer() {
                 if (timerSeconds <= 0) {
                     clearInterval(timerInterval);
                     timerRunning = false;
+                    document.getElementById('pauseBtn').disabled = true;
                 }
             }, 1000);
         }
@@ -68,6 +78,7 @@ function pauseTimer() {
     if (timerRunning) {
         timerRunning = false;
         clearInterval(timerInterval);
+        document.getElementById('pauseBtn').disabled = true;
     }
 }
 
@@ -80,9 +91,10 @@ function resetTimer() {
     timerSeconds = 0;
     document.getElementById('timerDisplay').classList.add('hidden');
     document.getElementById('timerInputsContainer').classList.remove('hidden');
-    document.getElementById('hoursInput').value = '';
-    document.getElementById('minutesInput').value = '';
-    document.getElementById('secondsInput').value = '';
+    document.getElementById('pauseBtn').disabled = true;
+    document.getElementById('hoursInput').value = savedHours || '';
+    document.getElementById('minutesInput').value = savedMinutes || '';
+    document.getElementById('secondsInput').value = savedSeconds || '';
 }
 
 /**
