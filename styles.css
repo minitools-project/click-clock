@@ -15,10 +15,10 @@ body {
 }
 
 .container {
-    width: 100%;
-    max-width: 500px;
-    background: white;
-    border-radius: 20px;
+    width:100%;
+    height:100%;
+    max-width:1024px;
+    min-height:90vh;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     display: flex;
@@ -26,10 +26,9 @@ body {
 }
 
 /* Header */
-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.timer-header {
     color: white;
-    padding: 12px;
+    padding: 8px;
     text-align: center;
 }
 
@@ -53,20 +52,19 @@ main {
     
 }
 
-/* Sections */
-.section {
-    display: flex;
-    flex-direction: column;
+/* Sections */.timer-section {
+    display:grid;
+    grid-template-rows:51px 1fr 51px;
     
 }
-.timer-section{
+.counter-section {
     display:grid;
     grid-template-rows: 1fr 51px;
+    
 }
-
 .section h2 {
     font-size: 1.3rem;
-    color: #333;
+    color: white;
     text-align: center;
     font-weight: 600;
     margin-bottom: 8px;
@@ -77,11 +75,10 @@ main {
     font-size: 3.5rem;
     font-weight: 700;
     text-align: center;
-    color: #667eea;
+    color: white;
     font-family: 'Monaco', 'Courier New', monospace;
     letter-spacing: 2px;
     padding: 24px;
-    background: #f8f9ff;
     min-height: 120px;
     display: flex;
     align-items: center;
@@ -107,22 +104,23 @@ main {
 .counter-section {
     align-items: center;
     box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
-    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
     
 }
 .counter-container{
+    height:100%;
     width:100%;
     display:grid;
-    grid-template-rows: 1fr 51px;
+    grid-template-rows: 1fr 1fr;
 }
-
+button{    
+    background:none;
+}
 /* Large Tap Button */
 .btn-tap {
     width: 100%;
     border: none;
     color: white;
     font-size: 2.5rem;
-    background:none;
     font-weight: 700;
     letter-spacing: 2px;
     cursor: pointer;
@@ -132,13 +130,8 @@ main {
     justify-content: center;
 }
 
-.btn-tap:active {
-    transform: scale(0.95);
-    box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
-}
 
-.btn-tap:hover {
-    box-shadow: 0 15px 50px rgba(0, 212, 255, 0.4);
+.counter-container:hover {
     transform: translateY(-3px);
 }
 
@@ -164,30 +157,18 @@ main {
     cursor: pointer;
     transition: all 0.3s ease;
     color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn:active {
     transform: scale(0.95);
 }
 
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
 
 /* Button variants */
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
 .btn-primary:hover:not(:disabled) {
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -195,9 +176,6 @@ main {
     transform: translateY(-2px);
 }
 
-.btn-tertiary {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
 
 .btn-tertiary:hover:not(:disabled) {
     box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
@@ -210,7 +188,6 @@ main {
     align-items: center;
     
     padding: 12px;
-    background: #f8f9ff;
     justify-content: center;
 }
 
@@ -218,31 +195,19 @@ main {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: #667eea;
 }
 
 .checkbox-group label {
     cursor: pointer;
     font-size: 0.95rem;
-    color: #555;
+    color: white;
     user-select: none;
 }
 
 /* Footer */
-footer {
-    background: #f8f9ff;
-    padding: 16px 24px;
-    text-align: center;
-    font-size: 0.85rem;
-    color: #888;
-    border-top: 1px solid #e0e0e0;
-}
 
 /* Responsive design */
 @media (max-width: 600px) {
-    header h1 {
-        font-size: 2rem;
-    }
 
     .timer-display {
         font-size: 2.8rem;
@@ -263,13 +228,6 @@ footer {
 }
 
 @media (max-width: 400px) {
-    header {
-        padding: 24px 8px;
-    }
-
-    header h1 {
-        font-size: 1.8rem;
-    }
 
     .timer-display {
         font-size: 2.2rem;
