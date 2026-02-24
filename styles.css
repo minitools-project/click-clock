@@ -56,9 +56,18 @@ main {
     display: grid;
     grid-template-rows: 1fr 1fr;
     }
-.section {
+.timer-section {
     display:grid;
     grid-template-rows:1fr 71px;
+}
+.counter-section {
+    display:grid;
+    grid-template-rows:1fr 51px 71px;
+}
+.add-buttons-row{
+    display:grid;
+    width:100%;
+    grid-template-columns:repeat(5,1fr);
 }
 .section h2 {
     font-size: 1.3rem;

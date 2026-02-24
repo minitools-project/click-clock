@@ -156,6 +156,18 @@ function incrementCounter() {
 }
 
 /**
+ * Add a specified amount to the counter
+ * @param {number} amount
+ */
+function addToCounter(amount) {
+    const n = Number(amount) || 0;
+    if (n <= 0) return;
+    counterValue += n;
+    updateCounterDisplay();
+    vibrate(50);
+}
+
+/**
  * Decrement the counter (not below zero)
  */
 function decrementCounter() {
