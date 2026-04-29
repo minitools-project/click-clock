@@ -454,6 +454,11 @@ button {
 .nav-icon  { font-size: 1.2rem; line-height: 1; }
 .nav-label { font-size: 0.52rem; letter-spacing: 1.5px; text-transform: uppercase; }
 
+/* ── Combo widget: hidden class that respects flex ── */
+/* (running view uses display:flex, so .hidden must override) */
+#co-run.hidden { display: none !important; }
+#co-in.hidden  { display: none !important; }
+
 /* ── Utility ─────────────────────────────── */
 .hidden { display: none !important; }
 

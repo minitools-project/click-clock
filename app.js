@@ -43,7 +43,7 @@ function mkBadge(state) {
 // Widget Registry – add new widgets here
 // ============================================
 const WIDGETS = [
-    { id:'timer',     icon:'⏱', label:'Timer',     factory: wTimer },
+    { id:'combo',     icon:'⏱', label:'Timer',     factory: wCombo },
     { id:'stopwatch', icon:'⏲', label:'Stopp',     factory: wStopwatch },
     { id:'counter',   icon:'✚', label:'Zähler',    factory: wCounter },
     { id:'pomodoro',  icon:'🍅', label:'Pomodoro',  factory: wPomodoro },
@@ -52,7 +52,7 @@ const WIDGETS = [
 ];
 
 // ── Router ────────────────────────────────────
-let active = 'timer';
+let active = 'combo';
 const inst = {};
 
 function go(id) {
@@ -87,7 +87,143 @@ function boot() {
 }
 
 // ============================================
-// WIDGET: Countdown Timer
+// WIDGET: Timer + Counter (Kombination – Original)
+// Timer oben, Tap-Counter unten, beide gleichzeitig sichtbar
+// ============================================
+function wCombo(el) {
+    // ── Timer state ──
+    let tSec=0, tTotal=0, tRunning=false, tIv=null, savedH=0, savedM=0, savedS=0;
+    // ── Counter state ──
+    let count=0, prevCount=0;
+
+    el.style.cssText = 'display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden;';
+
+    el.innerHTML = `
+      <!-- TIMER HALF -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <!-- Input view -->
+        <div id="co-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+          <div class="timer-inputs-container">
+            <div class="time-col">
+              <input class="timer-input" id="co-h" type="number" min="0" max="23" placeholder="00">
+              <span class="input-label">Std</span>
+            </div>
+            <span class="timer-separator">:</span>
+            <div class="time-col">
+              <input class="timer-input" id="co-m" type="number" min="0" max="59" placeholder="00">
+              <span class="input-label">Min</span>
+            </div>
+            <span class="timer-separator">:</span>
+            <div class="time-col">
+              <input class="timer-input" id="co-s" type="number" min="0" max="59" placeholder="00">
+              <span class="input-label">Sek</span>
+            </div>
+          </div>
+        </div>
+        <!-- Running view -->
+        <div id="co-run" class="hidden" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 12px;">
+          <div class="timer-display" id="co-disp" style="padding:10px 12px;">00:00:00</div>
+          <div class="progress-track" style="width:100%;"><div class="progress-fill" id="co-prog" style="width:100%"></div></div>
+        </div>
+        <!-- Timer buttons -->
+        <div class="btn-row c3" style="border-top:1px solid var(--white-12);flex-shrink:0;">
+          <button class="btn" id="co-start">▶ Start</button>
+          <button class="btn" id="co-pause" disabled>⏸ Pause</button>
+          <button class="btn" id="co-reset">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div style="height:1px;background:var(--white-12);flex-shrink:0;"></div>
+
+      <!-- COUNTER HALF -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <!-- Tap area -->
+        <div class="tap-area" id="co-tap" style="flex:1;">
+          <div class="counter-num" id="co-num">0</div>
+          <div class="tap-hint">TAP</div>
+        </div>
+        <!-- +2…+6 row -->
+        <div class="btn-row c5" style="height:48px;border-top:1px solid var(--white-12);">
+          <button class="btn" style="font-size:.85rem;" data-add="2">+2</button>
+          <button class="btn" style="font-size:.85rem;" data-add="3">+3</button>
+          <button class="btn" style="font-size:.85rem;" data-add="4">+4</button>
+          <button class="btn" style="font-size:.85rem;" data-add="5">+5</button>
+          <button class="btn" style="font-size:.85rem;" data-add="6">+6</button>
+        </div>
+        <!-- Undo / Reset -->
+        <div class="btn-row c2" style="border-top:1px solid var(--white-12);">
+          <button class="btn" id="co-undo">← Undo</button>
+          <button class="btn" id="co-creset">↺ Reset</button>
+        </div>
+      </div>
+    `;
+
+    // ── Timer refs ──
+    const inCard  = el.querySelector('#co-in');
+    const runCard = el.querySelector('#co-run');
+    const disp    = el.querySelector('#co-disp');
+    const prog    = el.querySelector('#co-prog');
+    const startB  = el.querySelector('#co-start');
+    const pauseB  = el.querySelector('#co-pause');
+    const hIn=el.querySelector('#co-h'), mIn=el.querySelector('#co-m'), sIn=el.querySelector('#co-s');
+    [hIn,mIn,sIn].forEach(i => i.addEventListener('input', () => { if(i.value.length>2) i.value=i.value.slice(0,2); }));
+
+    function tDraw() {
+        disp.textContent = fmt(tSec, true);
+        const r = tTotal>0 ? tSec/tTotal : 1;
+        prog.style.width = (r*100)+'%';
+        const cls = r<0.1?' danger':r<0.25?' warn':'';
+        prog.className='progress-fill'+cls; disp.className='timer-display'+cls;
+        disp.style.padding='10px 12px';
+    }
+
+    function tStart() {
+        if (tRunning) return;
+        if (!inCard.classList.contains('hidden')) {
+            const h=parseInt(hIn.value)||0, m=parseInt(mIn.value)||0, s=parseInt(sIn.value)||0;
+            savedH=h; savedM=m; savedS=s; tSec=tTotal=h*3600+m*60+s;
+            if (tSec<=0) return;
+            inCard.classList.add('hidden'); runCard.classList.remove('hidden');
+        }
+        tRunning=true; startB.disabled=true; pauseB.disabled=false;
+        tIv = setInterval(() => {
+            tSec--; tDraw();
+            if (tSec<=0) { clearInterval(tIv); tRunning=false; startB.disabled=false; pauseB.disabled=true; beepFinish(); vib([200,80,200]); }
+        }, 1000);
+        tDraw();
+    }
+
+    function tPause() {
+        if (!tRunning) return; clearInterval(tIv); tRunning=false;
+        startB.disabled=false; pauseB.disabled=true;
+    }
+
+    function tReset() {
+        clearInterval(tIv); tRunning=false; tSec=0;
+        inCard.classList.remove('hidden'); runCard.classList.add('hidden');
+        startB.disabled=false; pauseB.disabled=true;
+        hIn.value=savedH||''; mIn.value=savedM||''; sIn.value=savedS||'';
+    }
+
+    startB.addEventListener('click', tStart);
+    pauseB.addEventListener('click', tPause);
+    el.querySelector('#co-reset').addEventListener('click', tReset);
+
+    // ── Counter refs ──
+    const numEl = el.querySelector('#co-num');
+    function cDraw() { numEl.textContent = count; }
+
+    el.querySelector('#co-tap').addEventListener('click', () => { prevCount=count; count++; cDraw(); vib(25); beep(660,0.06,0.08); });
+    el.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); prevCount=count; count+=+b.dataset.add; cDraw(); vib(35); }));
+    el.querySelector('#co-undo').addEventListener('click',  () => { count=prevCount; cDraw(); vib(50); });
+    el.querySelector('#co-creset').addEventListener('click', () => { prevCount=count; count=0; cDraw(); });
+
+    return {};
+}
+
+// ============================================
+// WIDGET: Countdown Timer (standalone)
 // ============================================
 function wTimer(el) {
     let sec=0, total=0, running=false, iv=null, savedH=0, savedM=20, savedS=0;
